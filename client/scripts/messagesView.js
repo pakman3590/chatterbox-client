@@ -6,21 +6,48 @@ var MessagesView = {
   $chats: $('#chats'),
 
   initialize: function() {
-    // TODO: Perform any work which needs to be done
-    // when this view loads.
+    // set up event listener for friend username click
+    $userName = $('.username');
+    $('#chats').on('click', '.username', function() {
+      MessagesView.handleClick($(this).text());
+
+    });
+
   },
 
-  render: function() {
-    // TODO: Render _all_ the messages.
+  render: function(room) {
+    // clear feed
+    MessagesView.$chats.html('');
+    // loop through messages data array
+    for (let message of Messages._data) {
+      if (!room) {
+        MessagesView.renderMessage(message);
+      } else if (message.roomname === room) {
+        MessagesView.renderMessage(message);
+      }
+    }
   },
 
   renderMessage: function(message) {
-    // TODO: Render a single message.
+    let templateMess = {
+      username: message.username,
+      text: message.text,
+      roomname: message.roomname
+    };
+    let newMessageHTML = MessageView.render(templateMess);
+    //console.log(newMessageHTML)
+    //let $userHTML = newMessageHTML.childNode[0];
+    //console.log($userHTML)
+    // run friend check
+    //Friends.checkFriend($userHTML, message.username);
+    // prepend new message to chat feed
+    MessagesView.$chats.prepend(newMessageHTML);
+    //console.log(newMessageHTML)
   },
 
-  handleClick: function(event) {
-    // TODO: handle a user clicking on a message
-    // (this should add the sender to the user's friend list).
-  }
+  handleClick: function(username) {
+    // add clicked friend to friend list
+    Friends.addFriend(username);
+  },
 
 };

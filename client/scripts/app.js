@@ -8,6 +8,8 @@ var App = {
 
   username: 'anonymous',
 
+  currentRoom: null,
+
   initialize: function() {
     App.username = window.location.search.substr(10);
 
@@ -19,8 +21,12 @@ var App = {
     App.startSpinner();
     App.fetch(App.stopSpinner);
 
-    // TODO: Make sure the app loads data from the API
-    // continually, instead of just once at the start.
+    // set timeout for refresh (5 min timeout)
+    setTimeout(() => {
+      App.startSpinner();
+      App.fetch(App.stopSpinner);
+    }, 300000);
+
   },
 
   fetch: function(callback = ()=>{}) {
@@ -28,8 +34,23 @@ var App = {
       // examine the response from the server request:
       console.log(data);
 
-      // TODO: Use the data to update Messages and Rooms
-      // and re-render the corresponding views.
+      // parse data entries into messages and rooms for storage
+      // loop through fetched data array
+      for (let i = data.length - 1; i >= 0; i --) {
+        let newMessage = data[i];
+        let newRoom = newMessage.roomname;
+        // sort for invalid messages
+        if (newMessage.message_id > Messages.lastMessageID && newRoom && newMessage.text && newMessage.username) {
+          // add message to storage
+          Messages.addMessage(newMessage);
+          // invoke addroom
+          Rooms.addRoom(newRoom);
+        }
+      }
+      // run callback to stop spinner
+      callback();
+      // render messages and rooms
+      RoomsView.renderRoom(App.currentRoom);
     });
   },
 

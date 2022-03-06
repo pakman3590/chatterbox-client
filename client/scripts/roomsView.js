@@ -7,8 +7,7 @@ var RoomsView = {
   $select: $('#rooms select'),
 
   initialize: function() {
-    // TODO: Perform any work which needs to be done
-    // when this view loads.
+    // set up event listeners for room selection and new room button
   },
 
   render: function() {
@@ -16,11 +15,11 @@ var RoomsView = {
   },
 
   renderRoom: function(roomname) {
-    // TODO: Render out a single room.
+    MessagesView.render(roomname);
   },
 
   handleChange: function(event) {
-    // TODO: Handle a user selecting a different room.
+    RoomsView.renderRoom(SOMETHING);
   },
 
   handleClick: function(event) {
